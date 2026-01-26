@@ -1,5 +1,5 @@
 # Build stage for React frontend
-FROM node:20-alpine AS frontend-build
+FROM node:20-alpine3.21 AS frontend-build
 
 WORKDIR /app/client
 
@@ -16,18 +16,20 @@ COPY client/ ./
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine AS production
+FROM node:20-alpine3.21 AS production
 
 WORKDIR /app
 
-# Install procps for proper process monitoring with host PID namespace
-RUN apk add --no-cache procps
+# Upgrade busybox and install procps for proper process monitoring
+RUN apk upgrade --no-cache busybox && \
+    apk add --no-cache procps
 
 # Copy server package files
 COPY server/package*.json ./
 
-# Install production dependencies only
-RUN npm install --production
+# Install production dependencies only, then remove npm to eliminate its bundled vulnerable packages
+RUN npm install --omit=dev && \
+    rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 # Copy server source
 COPY server/src ./src
