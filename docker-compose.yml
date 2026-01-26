@@ -1,0 +1,22 @@
+services:
+  orbit:
+    build: .
+    container_name: orbit
+    ports:
+      - "3001:3001"
+    volumes:
+      # Mount Docker socket to enable container monitoring
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount host's /etc/hostname to read actual hostname
+      - /etc/hostname:/host/etc/hostname:ro
+      # Mount host root filesystem to monitor disk usage
+      - /:/hostfs:ro
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    # Required for accessing host system metrics
+    pid: host
+    # Allows reading system information
+    privileged: false
+    security_opt:
+      - no-new-privileges:true

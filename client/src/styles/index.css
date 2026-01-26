@@ -1,0 +1,845 @@
+:root {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --card-bg-hover: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #334155;
+  --accent-blue: #3b82f6;
+  --accent-green: #22c55e;
+  --accent-yellow: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-purple: #8b5cf6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--accent-blue);
+}
+
+.header-title h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.connection-status.connected {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--accent-green);
+}
+
+.connection-status.disconnected {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--accent-red);
+}
+
+/* Dashboard */
+.dashboard {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Card styles */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.cpu-card,
+.memory-card {
+  /* Ensure CPU and Memory cards have same height in the same row */
+  align-self: stretch;
+}
+
+.card h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.system-info-card { grid-column: span 4; }
+.cpu-card { grid-column: span 4; }
+.memory-card { grid-column: span 4; }
+.disk-card { grid-column: span 6; }
+.network-card { grid-column: span 6; }
+.docker-card { grid-column: span 12; }
+
+/* Loading state */
+.component-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+/* System Info */
+.system-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-section {
+  padding: 0.75rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.info-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-item label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.info-item span {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+/* CPU Metrics */
+.cpu-metrics {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cpu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cpu-gauges {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.gauge {
+  width: 100px;
+  height: 100px;
+}
+
+.gauge-text {
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+
+.gauge-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.cpu-temp {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.cpu-chart {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cpu-cores h4 {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.core-bars {
+  display: flex;
+  gap: 4px;
+  height: 60px;
+  align-items: flex-end;
+}
+
+.core-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.core-bar-fill {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s ease;
+}
+
+.core-label {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Mini Process List (for CPU and Memory panels) */
+.panel-processes {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.panel-processes h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.mini-process-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mini-process-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-color);
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.mini-process-row:hover {
+  background: var(--card-bg-hover);
+}
+
+.mini-process-name {
+  color: var(--text-primary);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-process-value {
+  font-weight: 500;
+  font-family: monospace;
+}
+
+/* Memory Metrics */
+.memory-metrics {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.memory-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.progress-label {
+  font-weight: 500;
+}
+
+.progress-value {
+  color: var(--text-secondary);
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-percent {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.memory-details {
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.detail-label {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Disk Metrics */
+.disk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.disk-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.disk-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.disk-mount {
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.disk-type {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.disk-bar {
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.disk-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.disk-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.disk-percent {
+  font-weight: 500;
+}
+
+/* Network Metrics */
+.network-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.network-interface {
+  padding: 0.75rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+}
+
+.network-header {
+  margin-bottom: 0.75rem;
+}
+
+.network-name {
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.network-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.network-stat {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.network-stat.rx svg {
+  color: var(--accent-green);
+}
+
+.network-stat.tx svg {
+  color: var(--accent-blue);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.stat-label {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.stat-speed {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.stat-total {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Process List */
+.process-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.process-summary {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.sort-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sort-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-buttons button:hover {
+  background: var(--card-bg-hover);
+}
+
+.sort-buttons button.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: white;
+}
+
+.process-table-container {
+  overflow-x: auto;
+}
+
+.process-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.process-table th {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.process-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.process-table .pid {
+  font-family: monospace;
+  color: var(--text-muted);
+}
+
+.process-table .name {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.process-table .user {
+  color: var(--text-secondary);
+}
+
+.process-table .cpu-value {
+  font-weight: 500;
+}
+
+.state-badge {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.state-badge.running { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); }
+.state-badge.sleeping { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+.state-badge.stopped { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+
+/* Docker */
+.docker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.docker-summary {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+}
+
+.docker-summary .running { color: var(--accent-green); }
+.docker-summary .stopped { color: var(--text-muted); }
+.docker-summary .images { color: var(--text-secondary); }
+
+.containers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.container-card {
+  background: var(--bg-color);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid var(--text-muted);
+}
+
+.container-card.running {
+  border-left-color: var(--accent-green);
+}
+
+.container-card.paused {
+  border-left-color: var(--accent-yellow);
+}
+
+.container-card.exited {
+  border-left-color: var(--accent-red);
+}
+
+.container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.container-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.state-icon.running { color: var(--accent-green); }
+.state-icon.paused { color: var(--accent-yellow); }
+.state-icon.stopped { color: var(--accent-red); }
+
+.container-id {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.container-image {
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.container-image .label {
+  color: var(--text-muted);
+}
+
+.container-image .value {
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.container-status {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.container-ports {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.container-ports .label {
+  color: var(--text-muted);
+}
+
+.ports-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.port-badge {
+  background: var(--card-bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.625rem;
+}
+
+.container-stats {
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.container-stats .stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.container-stats .stat-label {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.container-stats .stat-value {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.no-containers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+.docker-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.docker-unavailable h3 {
+  margin: 0.5rem 0;
+}
+
+.docker-unavailable p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.docker-unavailable .hint {
+  margin-top: 1rem;
+}
+
+.docker-unavailable code {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-color);
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.docker-version {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .system-info-card,
+  .cpu-card,
+  .memory-card,
+  .disk-card,
+  .network-card { grid-column: span 6; }
+
+  .docker-card { grid-column: span 12; }
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-info-card,
+  .cpu-card,
+  .memory-card,
+  .disk-card,
+  .network-card,
+  .docker-card {
+    grid-column: span 1;
+  }
+
+  .header {
+    padding: 1rem;
+  }
+
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .mini-process-name {
+    max-width: 120px;
+  }
+}
