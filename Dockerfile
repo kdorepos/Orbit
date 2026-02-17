@@ -1,5 +1,6 @@
 # Build stage for React frontend
-FROM node:20-alpine3.21 AS frontend-build
+# Use host platform to avoid QEMU emulation (output is arch-independent JS/CSS)
+FROM --platform=$BUILDPLATFORM node:20-alpine3.21 AS frontend-build
 
 WORKDIR /app/client
 
@@ -20,16 +21,18 @@ FROM node:20-alpine3.21 AS production
 
 WORKDIR /app
 
-# Upgrade busybox and install procps for proper process monitoring
+# Upgrade busybox, install procps, and add build tools for native addon compilation (ARM64)
 RUN apk upgrade --no-cache busybox && \
-    apk add --no-cache procps
+    apk add --no-cache procps && \
+    apk add --no-cache --virtual .build-deps python3 make g++
 
 # Copy server package files
 COPY server/package*.json ./
 
-# Install production dependencies only, then remove npm to eliminate its bundled vulnerable packages
+# Install production dependencies only, then remove npm and build tools
 RUN npm install --omit=dev && \
     rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+RUN apk del .build-deps
 
 # Copy server source
 COPY server/src ./src

@@ -1,5 +1,6 @@
 services:
   orbit:
+    image: ghcr.io/kdorepos/orbit:latest
     build: .
     container_name: orbit
     ports:
